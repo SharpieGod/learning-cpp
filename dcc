@@ -1,8 +1,10 @@
-#!/bin/bash
+# !/bin/bash
 set -euo pipefail
 
+# basic build script
+
 if [[ $# -lt 1 ]]; then
-    echo "Usage: $0 <file.cpp> [args passed to the program...]" >&2
+    echo "Usage: $0 <file.cpp>" >&2
     exit 1
 fi
 
