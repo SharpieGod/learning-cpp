@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 set -euo pipefail
 
 # basic build script
@@ -18,8 +18,7 @@ fi
 
 CXX=$(command -v g++-11 || command -v g++)
 
-root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-builddir="$root/.build"
+builddir="$HOME/.cpp/build"
 mkdir -p "$builddir"
 
 bin="$builddir/$(basename "${src%.*}")"
