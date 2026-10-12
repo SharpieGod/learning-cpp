@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int apply_rule(int n) {
+int next(int n) {
     int m = 0;
     while (n > 0) {
         m += (n % 10) * (n % 10);
@@ -15,13 +15,44 @@ int apply_rule(int n) {
 }
 
 bool in_tune(int a, int b) {
-    vector<int> past_a;
+    // is there a loop of a.
+    // is there a loop of b.
 
-    while (1) {
-        past_a.push_back(a);
+    // if theyre the same at any point, then theyre the same always.
+    // if there is a loop in a, and a loop in b, and theyre not the same, then
+    // theyre not in tune.
 
-        a = apply_rule(a);
+    // slow, fast
+
+    int slow_a = next(a);
+    int fast_a = next(slow_a);
+    bool a_loops = false;
+
+    int slow_b = next(b);
+    int fast_b = next(slow_b);
+    bool b_loops = false;
+
+    while (!b_loops || !a_loops) {
+        if (!a_loops) {
+            slow_a = next(slow_a);
+            fast_a = next(next(fast_a));
+        }
+
+        if (slow_a == fast_a) {
+            a_loops = true;
+        }
+
+        if (!b_loops) {
+            slow_b = next(slow_b);
+            fast_b = next(next(fast_b));
+        }
+
+        if (slow_b == fast_b) {
+            b_loops = true;
+        }
     }
+
+    return slow_a == slow_b;
 }
 
 int main(int argc, char const *argv[]) {
@@ -48,9 +79,9 @@ int main(int argc, char const *argv[]) {
 
         int count = 0;
 
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                cout << i << " " << j << "\n";
+        for (size_t i = 0; i < n - 1; i++) {
+            for (size_t j = i + 1; j < n; j++) {
+                // cout << i << " " << j << "\n";
                 if (in_tune(lighthouses[i], lighthouses[j])) {
                     count += 1;
                 }
