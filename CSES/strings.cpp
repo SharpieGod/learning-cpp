@@ -3,39 +3,30 @@
 using namespace std;
 string input;
 vector<string> out;
-unordered_map<char, int> char_count;
-unordered_map<char, int> building_char_count;
+map<char, int> char_count;
+map<char, int> building_char_count;
+string building;
+void generate() {
+    // cout << "Bulding: " << building << "\n";
 
-void generate(string building, bool any_left) {
-    // cout << building << "\n";
     if (building.size() == input.size()) {
         out.push_back(building);
         return;
     }
 
-    // don't chose to add anything
-
-    bool next_any_left = false;
-
     for (auto [ch, count] : building_char_count) {
         int remaining = char_count[ch] - count;
+        // cout << "For " << ch << " remaining: " << remaining << "\n";
 
-        next_any_left = next_any_left && remaining > 0;
+        if (remaining > 0) {
+            building.push_back(ch);
+            building_char_count[ch] += 1;
 
-        cout << remaining << " " << building << "\n";
+            generate();
 
-        if (any_left) {
-            generate(building, next_any_left);
-        }
+            building.pop_back();
 
-        for (int i = 1; i <= remaining; i++) {
-
-            building.append(i, ch);
-            building_char_count[ch] += i;
-
-            generate(building, next_any_left);
-
-            building_char_count[ch] -= i;
+            building_char_count[ch] -= 1;
         }
     }
 }
@@ -48,7 +39,7 @@ int main() {
         building_char_count[ch] = 0;
     }
 
-    generate("", true);
+    generate();
 
     cout << out.size() << "\n";
 

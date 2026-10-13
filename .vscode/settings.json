@@ -2,6 +2,7 @@
     "C_Cpp.intelliSenseEngine": "disabled",
     "clangd.arguments": [
         "--clang-tidy",
-        "--header-insertion=never"
+        "--header-insertion=never",
+        "--query-driver=**/g++*,**/gcc*"
     ]
 }
