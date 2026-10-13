@@ -28,7 +28,7 @@ int main() {
     cout << moves.size() << '\n';
 
     for (auto [from, to] : moves) {
-        cout << from << " " << to << "\n";
+        // cout << from << " " << to << "\n";
     }
 
     return 0;
