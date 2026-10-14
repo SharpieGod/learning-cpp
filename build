@@ -23,5 +23,5 @@ mkdir -p "$builddir"
 
 bin="$builddir/$(basename "${src%.*}")"
 
-"$CXX" -O2 -std=c++17 -static -o "$bin" "$src"
+"$CXX" -O2 -g1 -std=c++17 -static -o "$bin" "$src"
 "$bin" "$@"

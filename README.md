@@ -4,4 +4,8 @@ Compiler options: -O2 -std=c++17 -static
 As per Canadian Computing Contest specs.
 
 
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+# Useful Commands
+
+`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+
+`g++ -std=c++17 -g -O0 -fsanitize=address,undefined CSES/queens.cpp -o queens`
