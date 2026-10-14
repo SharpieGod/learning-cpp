@@ -33,19 +33,16 @@ bool in_tune(int a, int b) {
     bool b_loops = false;
 
     while (!b_loops || !a_loops) {
-        if (!a_loops) {
-            slow_a = next(slow_a);
-            fast_a = next(next(fast_a));
-        }
+
+        slow_a = next(slow_a);
+        fast_a = next(next(fast_a));
 
         if (slow_a == fast_a) {
             a_loops = true;
         }
 
-        if (!b_loops) {
-            slow_b = next(slow_b);
-            fast_b = next(next(fast_b));
-        }
+        slow_b = next(slow_b);
+        fast_b = next(next(fast_b));
 
         if (slow_b == fast_b) {
             b_loops = true;
