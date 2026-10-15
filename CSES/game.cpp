@@ -2,79 +2,85 @@
 
 using namespace std;
 
-vector<int> p1_cards;
-vector<int> p2_cards;
+vector<int> cards;
 
 int n;
 int a;
 int b;
 
-bool game(bool player_1_playing, int cur_a, int cur_b, int cur_ties) {
-    if (!p1_cards.empty() && p1_cards.size() == p2_cards.size()) {
-        if (p1_cards.back() > p2_cards.back()) {
-            cur_a += 1;
-        } else if (p1_cards.back() < p2_cards.back()) {
-            cur_b += 1;
-        } else {
-            cur_ties += 1;
+void game() {
+    int ties = n - (a + b);
+
+    for (int i = 0; i < ties; i++) {
+        if (cards.size() >= n) {
+            cout << "NO\n";
+            return;
         }
+
+        cards.push_back(cards.size());
     }
 
-    int wanted_ties = n - (a + b);
+    // for (int i = 0; i < cards.size(); i++) {
+    //     cout << (cards[i]) << (i == cards.size() - 1 ? "\n" : " ");
+    // }
 
-    if (cur_a == a && cur_b == b && cur_ties == wanted_ties) {
-        return true;
+    for (int i = 0; i < b; i++) {
+        if (cards.size() + 1 >= n) {
+            cout << "NO\n";
+            return;
+        }
+
+        cards.push_back(cards.size() + 1);
     }
 
-    int max_score_gain = n - (cur_a + cur_b + cur_ties);
+    // for (int i = 0; i < cards.size(); i++) {
+    //     cout << (cards[i]) << (i == cards.size() - 1 ? "\n" : " ");
+    // }
 
-    if (cur_ties > wanted_ties || cur_a + max_score_gain < a ||
-        cur_b + max_score_gain < b) {
-        return false;
-    }
-
-    vector<int> &played = (player_1_playing ? p1_cards : p2_cards);
-
-    for (int card = 0; card < n; card++) {
-        if (find(played.begin(), played.end(), card) != played.end()) {
+    for (int i = 0; i < n; i++) {
+        if (find(cards.begin(), cards.end(), i) != cards.end()) {
             continue;
         }
 
-        played.push_back(card);
-        if (game(!player_1_playing, cur_a, cur_b, cur_ties)) {
-            return true;
+        if (i == cards.size()) {
+            cout << "NO\n";
+            return;
         }
 
-        played.pop_back();
+        cards.push_back(i);
     }
 
-    return false;
+    if (cards.size() != n) {
+        cout << "NO\n";
+        return;
+    }
+
+    cout << "YES\n";
+
+    vector<int> p1_cards(n, 0);
+    iota(p1_cards.begin(), p1_cards.end(), 0);
+
+    for (int i = 0; i < p1_cards.size(); i++) {
+        cout << (p1_cards[i] + 1) << " ";
+    }
+    cout << "\n";
+
+    for (int i = 0; i < cards.size(); i++) {
+        cout << (cards[i] + 1) << " ";
+    }
+    cout << "\n";
 }
 
 int main() {
+
     ios::sync_with_stdio(false);
-    cin.tie(nullptr);
     int t;
     cin >> t;
 
-    for (int _test = 0; _test < t; _test++) {
-        cin >> n;
-        cin >> a;
-        cin >> b;
-        p1_cards.clear();
-        p2_cards.clear();
+    while (t--) {
+        cin >> n >> a >> b;
 
-        if (game(true, 0, 0, 0)) {
-            cout << "YES\n";
-
-            for (int i = 0; i < p1_cards.size(); i++) {
-                cout << p1_cards[i] + 1
-                     << (i == p1_cards.size() - 1 ? "\n" : " ");
-            }
-            for (int i = 0; i < p2_cards.size(); i++) {
-                cout << p2_cards[i] + 1
-                     << (i == p2_cards.size() - 1 ? "\n" : " ");
-            }
-        }
+        cards.clear();
+        game();
     }
 }
