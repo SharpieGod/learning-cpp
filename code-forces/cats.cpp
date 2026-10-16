@@ -37,14 +37,23 @@ int main() {
             // y0 = ym
             // y1 = yh
             double m = (yh - ym) / (xh - xm);
-            double b = ym - xm * m;
-            double u = b - cy;
-
+            double u = ym - cy - m * xm;
             double a = m * m + 1;
-            double p = 2 * m * u - 2 * cx;
-            double q = u * u + cx * cx - r * r;
+            double b = 2 * m * u - 2 * cx;
+            double c = u * u + cx * cx - r * r;
 
-            if ((p * p - 4 * a * q) < 0 || a == 0) {
+            double descriminant = b * b - 4 * a * c;
+            if (descriminant < 0) {
+                continue;
+            }
+
+            double x_pos = (-b + sqrt(descriminant)) / (2 * a);
+            double x_neg = (-b - sqrt(descriminant)) / (2 * a);
+
+            if (!(xm <= xh && (xm <= x_pos && x_pos <= xh) ||
+                  xh <= xm && (xh <= x_pos && x_pos <= xm))
+
+            ) {
                 continue;
             }
 
