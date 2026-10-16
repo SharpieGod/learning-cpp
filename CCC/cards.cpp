@@ -21,46 +21,19 @@ int main() {
         cin >> x;
         if (x == -1) {
 
-            vector<vector<int>> computed = {
-                {1, 1, 1, 1}, {2, 2, 2, 2}, {2, 1, 1, 1}, {1, 2, 1, 1},
-                {1, 1, 2, 1}, {1, 1, 1, 2}, {2, 2, 1, 1}, {2, 1, 2, 1},
-                {2, 1, 1, 2}, {1, 1, 2, 2}, {2, 2, 2, 1}, {2, 2, 1, 2},
-                {2, 1, 2, 2}, {1, 2, 2, 2}, {1, 2, 1, 2}, {1, 2, 2, 1},
+            vector<int> idx(N);
+            iota(idx.begin(), idx.end(), 1);
+            mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+            shuffle(idx.begin(), idx.end(), rng);
 
-            };
-            cout << 14 << "\n";
-
-            for (auto cur_all : computed) {
-
-                evens.clear();
-                odds.clear();
-
-                for (int i = 0; i < cur_all.size(); i++) {
-
-                    if (cur_all[i] % 2 == 0) {
-                        evens.emplace_back(i);
-                    } else {
-                        odds.emplace_back(i);
-                    }
-                }
-
-                if (evens.size() >= 2) {
-                    cout << "1 1\n";
-                    cout << evens[0] + 1 << "\n";
-                    cout << evens[1] + 1 << "\n";
-                }
-
-                else if (evens.size() == 1 && odds.size() >= 2) {
-                    cout << "2 1\n";
-                    cout << odds[0] + 1 << " " << odds[1] + 1 << "\n";
-                    cout << evens[0] + 1 << "\n";
-                } else {
-                    cout << "2 2\n";
-
-                    cout << odds[0] + 1 << " " << odds[1] + 1 << "\n";
-                    cout << odds[2] + 1 << " " << odds[3] + 1 << "\n";
-                }
+            cout << 100 << "\n";
+            for (int g = 0; g < 100; g++) {
+                int *c = &idx[4 * g];
+                cout << "2 2\n";
+                cout << c[0] << " " << c[1] << "\n";
+                cout << c[2] << " " << c[3] << "\n";
             }
+
             return 0;
         }
 
