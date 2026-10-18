@@ -4,26 +4,11 @@ using namespace std;
 
 using ll = long long int;
 
-ll saved_digit_counts[21];
-
-ll numbers_with_n_digits(ll n) {
-    if (n == 0) {
-        return 0;
-    }
-
-    if (saved_digit_counts[n] != -1) {
-        return saved_digit_counts[n];
-    }
-
-    ll r = (ll)pow(10, n) - 1 - numbers_with_n_digits(n - 1);
-    saved_digit_counts[n] = r;
-
-    return r;
-}
+ll numbers_with_n_digits(ll n) { return 9 * pow(10, n - 1); }
 
 int main() {
-    fill(begin(saved_digit_counts), end(saved_digit_counts), -1);
-    numbers_with_n_digits(21);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
     // cout << numbers_with_n_digits(1);
 
@@ -31,16 +16,15 @@ int main() {
     cin >> t;
 
     while (t--) {
-
         ll k;
         cin >> k;
         k--;
-        // faster: binary search
 
+        // faster: binary search
         ll n = k;
         ll digits = 1;
 
-        while (n - numbers_with_n_digits(digits) * digits >= 0) {
+        while (n / digits >= numbers_with_n_digits(digits)) {
             n -= numbers_with_n_digits(digits) * digits;
             digits++;
         }
@@ -49,7 +33,7 @@ int main() {
 
         int c = (lands / (ll)pow(10, digits - (n % digits) - 1)) % 10;
 
-        cout << lands << " " << digits << "\n";
+        // cout << lands << " " << digits << "\n";
 
         cout << c << "\n";
     }
