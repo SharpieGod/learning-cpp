@@ -4,64 +4,53 @@ using namespace std;
 
 using ll = long long int;
 
-vector<ll> digit_map(21, -1);
+ll saved_digit_counts[21];
 
-ll number_count(ll digits) {
-    if (digit_map[digits] != -1) {
-        return digit_map[digits];
-    }
-
-    if (digits == 0) {
+ll numbers_with_n_digits(ll n) {
+    if (n == 0) {
         return 0;
     }
 
-    ll r = (ll)pow(10, digits) - number_count(digits - 1) - 1;
-    digit_map[digits] = r;
+    if (saved_digit_counts[n] != -1) {
+        return saved_digit_counts[n];
+    }
+
+    ll r = (ll)pow(10, n) - 1 - numbers_with_n_digits(n - 1);
+    saved_digit_counts[n] = r;
 
     return r;
 }
 
-pair<ll, ll> lands_on_digit_size(ll k) {
-    ll l = 1;
-
-    while (k - number_count(l) * l > 0) {
-        // cout << k << " ";
-        k -= number_count(l) * l;
-        l++;
-    }
-
-    return {l, k};
-}
-
-ll nth_digit(int n, ll number) { return (number / (ll)pow(10, n)) % 10; }
-
 int main() {
-    // ios::sync_with_stdio(false);
-    // cin.tie(nullptr);
+    fill(begin(saved_digit_counts), end(saved_digit_counts), -1);
+    numbers_with_n_digits(21);
 
-    int q;
-    cin >> q;
+    // cout << numbers_with_n_digits(1);
 
-    while (q--) {
+    int t;
+    cin >> t;
+
+    while (t--) {
+
         ll k;
-
         cin >> k;
+        k--;
+        // faster: binary search
 
-        // l is what digit numbers to look at k - number_count(m - 1),
-        // so if k is asking for the 10th digit, that is 10 - 9 = 1, so its the
-        // first digit of the first 2-digit number. next I need to find what
-        // l-digit number k - number_count(m - 1) lands on.
+        ll n = k;
+        ll digits = 1;
 
-        auto [l, n] = lands_on_digit_size(k);
+        while (n - numbers_with_n_digits(digits) * digits >= 0) {
+            n -= numbers_with_n_digits(digits) * digits;
+            digits++;
+        }
 
-        cout << "l: " << l << " " << "n: " << n << "\n";
+        ll lands = (ll)pow(10, digits - 1) + (n / digits);
 
-        ll lands = (ll)pow(10, l - 1) + ((n - 1) / l);
-        ll digit = n % l;
-        cout << "lands: " << lands << " " << "digit: " << digit << "\n";
+        int c = (lands / (ll)pow(10, digits - (n % digits) - 1)) % 10;
 
-        cout << nth_digit(digit, lands) << "\n";
+        cout << lands << " " << digits << "\n";
+
+        cout << c << "\n";
     }
-
-    return 0;
 }
