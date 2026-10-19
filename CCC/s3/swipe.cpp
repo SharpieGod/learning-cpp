@@ -5,6 +5,17 @@ using namespace std;
 vector<int> A;
 vector<int> B;
 
+// value -> indicies
+unordered_map<int, vector<size_t>> indicies;
+
+struct Range {
+    int value;
+    size_t start;
+    size_t end; // not inclusive
+};
+
+void dfs() {}
+
 int main() {
     int N;
 
@@ -16,6 +27,8 @@ int main() {
     for (int i = 0; i < N; i++) {
         int x;
         cin >> x;
+
+        indicies[x].push_back(A.size());
         A.push_back(x);
     }
 
@@ -29,7 +42,7 @@ int main() {
 
     size_t l = 0, r = 0;
 
-    vector<pair<bool, pair<size_t, size_t>>> moves;
+    vector<Range> ranges;
 
     while (l < B.size()) {
         r = l + 1;
@@ -39,43 +52,12 @@ int main() {
             r++;
         }
 
-        // cout << l << " " << r << " " << n << "\n";
-        auto found = find(A.begin() + l, A.begin() + l + r, n);
-        if (found == A.begin() + l + r) {
-            cout << "NO\n";
-            return 0;
-        }
-
-        int dist = distance(A.begin(), found);
-
-        // we know that n exists in [l, r)
-
-        int swipe_left = dist - l;
-        int swipe_right = r - dist - 1;
-
         // instead of adding these moves directly, store them as (start, ACTUAL
         // LOCATION, end). then solve for order seperatly, after these
-        // calculations.
+        // calculations
 
-        if (swipe_left > 0) {
-            moves.push_back({false, {dist, dist - swipe_left}});
-        }
-
-        if (swipe_right > 0) {
-            moves.push_back({true, {dist, dist + swipe_right}});
-        }
-
+        ranges.push_back({n, l, r});
         l = r;
-    }
-
-    cout << "YES\n";
-    cout << moves.size() << "\n";
-
-    for (auto [is_right, from_to] : moves) {
-
-        auto [from, to] = from_to;
-
-        cout << (is_right ? "R" : "L") << " " << from << " " << to << '\n';
     }
 
     return 0;
