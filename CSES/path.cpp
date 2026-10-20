@@ -3,29 +3,22 @@
 using namespace std;
 string directions;
 
-int saved[48 * 64 * 8 * 48];
+bool visited[7][7];
 
-unordered_set<int> visited;
-
-// if too slow, memoize
 int dfs(int x, int y, size_t index) {
-    if (index == directions.size()) {
+    if (x == 0 && y == 6) {
         // cout << x << ' ' << y << '\n';
-        return ((x == 0 && y == 6) ? 1 : 0);
+        return ((index == 48) ? 1 : 0);
     }
 
-    if (visited.find(x * 8 + y) != visited.end()) {
+    if (visited[x][y]) {
         return 0;
-    }
-
-    if (saved[index * 64 + x * 8 + y] != -1) {
-        return saved[index * 64 + x * 8 + y];
     }
 
     char instruction = directions[index];
 
     int s = 0;
-    visited.insert(x * 8 + y);
+    visited[x][y] = true;
     index++;
 
     for (char compare : {'U', 'D', 'L', 'R'}) {
@@ -57,16 +50,13 @@ int dfs(int x, int y, size_t index) {
     }
 
     index--;
-    visited.erase(x * 8 + y);
-
-    saved[index * 64 + x * 8 + y] = s;
+    visited[x][y] = false;
 
     return s;
 }
 
 int main() {
     cin >> directions;
-    fill(begin(saved), end(saved), -1);
 
     cout << dfs(0, 0, 0) << "\n";
 
