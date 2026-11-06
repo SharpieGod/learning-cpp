@@ -5,43 +5,41 @@ using namespace std;
 int n, m;
 
 using ll = long long int;
-using Edge = pair<int, ll>;
-using Tunnel = vector<vector<Edge>>;
-vector<optional<ll>> best_score_yet;
+
 vector<bool> visited;
+vector<bool> saved;
 
-void dfs(int cur, ll score, Tunnel &tunnel) {
-    if (cur == n - 1) {
-        best_score_yet[cur] =
-            max(best_score_yet[cur].value_or(LONG_LONG_MIN), score);
-        return;
+bool reaches_end(size_t from, vector<vector<size_t>> &connections) {
+    if (from == n - 1) {
+        return true;
     }
 
-    if (score < best_score_yet[cur].value_or(LONG_LONG_MIN)) {
-        return; // got here by a better way
+    if (visited[from]) {
+        return saved[from];
     }
 
-    if (score > best_score_yet[cur].value_or(LONG_LONG_MAX) && visited[cur]) {
-        // arbitrairily large!
+    visited[from] = true;
 
-        cout << "-1" << "\n";
-        exit(0);
+    bool reaches = false;
+
+    for (auto to : connections[from]) {
+
+        if (reaches_end(to, connections)) {
+            reaches = true;
+            break;
+        }
     }
 
-    bool prev = visited[cur];
-    visited[cur] = true;
-    best_score_yet[cur] = score;
+    saved[from] = reaches;
 
-    for (auto [next, cost] : tunnel[cur]) {
-        dfs(next, score + cost, tunnel);
-    }
-    visited[cur] = prev;
-}
+    return reaches;
+};
 
 int main() {
     cin >> n >> m;
-    Tunnel tunnel(n, vector<Edge>{});
-    visited.assign(n, false);
+
+    vector<vector<ll>> weight(n, vector<ll>(n, LONG_LONG_MAX));
+    vector<vector<size_t>> connections(n, vector<size_t>{});
 
     while (m--) {
         int from, to;
@@ -51,13 +49,59 @@ int main() {
         from--;
         to--;
 
-        tunnel[from].push_back({to, score});
+        if (weight[from][to] == LONG_LONG_MAX) {
+
+            connections[from].push_back(to);
+        }
+
+        // parallel edges exist: keep the best one
+        weight[from][to] = min(weight[from][to], -score);
     }
 
-    best_score_yet.assign(n, nullopt);
+    vector<ll> dist(n, LONG_LONG_MAX);
+    visited.assign(n, false);
+    saved.assign(n, false);
 
-    dfs(0, 0, tunnel);
-    cout << best_score_yet[n - 1].value() << '\n';
+    dist[0] = 0;
+
+    for (size_t k = 0; k < n; k++) {
+        for (size_t i = 0; i < n; i++) {
+            for (auto j : connections[i]) {
+                auto w = weight[i][j];
+
+                // if i is visited, and if I get to j from i, is that the best?
+
+                if (dist[i] != LONG_LONG_MAX && dist[i] + w < dist[j]) {
+                    dist[j] = dist[i] + w;
+                }
+            }
+        }
+    }
+
+    // run it once more to see if theres an inf loop
+
+    for (size_t i = 0; i < n; i++) {
+        for (auto j : connections[i]) {
+            auto w = weight[i][j];
+
+            if (w == LONG_LONG_MAX) {
+                continue;
+            }
+
+            if (dist[i] != LONG_LONG_MAX && dist[i] + w < dist[j]) {
+                // possible inf loop
+
+                // dist[j] = dist[i] + w;
+
+                if (reaches_end(i, connections)) {
+                    cout << "-1\n";
+                    return 0;
+                }
+            }
+        }
+    }
+
+    cout << -dist[n - 1] << '\n';
 
     return 0;
 }
