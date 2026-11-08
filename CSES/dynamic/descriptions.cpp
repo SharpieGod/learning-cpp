@@ -3,53 +3,52 @@
 using namespace std;
 using ll = unsigned long long int;
 int n, m;
-vector<ll> arr;
+vector<ll> nums;
 const int MOD = 1000000007;
 
-vector<vector<optional<ll>>> saved;
-
-ll count(size_t index, optional<int> prev_chosen) {
-    if (index == n) {
+ll count(size_t index, int prev_chosen) {
+    // cout << "cur: " << nums[index] << " prev_chosen: " << prev_chosen <<
+    // '\n';
+    if (index >= nums.size()) {
         return 1;
-    }
-
-    if (saved[index][prev_chosen.value_or(0) + 1].has_value()) {
-        return saved[index][prev_chosen.value_or(0) + 1].value();
-    }
-
-    if (arr[index] != 0) {
-
-        auto c = count(index + 1, arr[index]);
-        saved[index][prev_chosen.value_or(0) + 1] = c;
-        return c;
     }
 
     int s = 0;
 
-    int minimum = max(0, prev_chosen.value_or(0) - 1);
-    int maximum = min(m, prev_chosen.value_or(INT_MAX) + 1);
+    if (nums[index] == 0) {
+        int minimum = max(1, prev_chosen - 1);
+        int maximum = min(m, prev_chosen + 1);
 
-    for (int i = minimum; i <= maximum; i++) {
-        s += count(index + 1, i) % MOD;
-        s %= MOD;
+        if (prev_chosen == 0) {
+            minimum = 1;
+            maximum = m;
+        }
+
+        for (int x = minimum; x <= maximum; x++) {
+            if (index < nums.size() - 1 && nums[index + 1] != 0 &&
+                abs((int)nums[index + 1] - x) > 1) {
+                continue;
+            }
+
+            s += count(index + 1, x) % MOD;
+        }
+    } else if (abs((int)nums[index] - (int)nums[index + 1]) < 1) {
+        s = count(index + 1, nums[index]) % MOD;
     }
 
-    saved[index][prev_chosen.value_or(0) + 1] = s;
-
-    return s;
+    return s % MOD;
 }
 
 int main() {
     cin >> n >> m;
 
-    arr.assign(n, 0);
+    nums.assign(n, 0);
 
-    saved.assign(n + 1, vector<optional<ll>>(m + 1, nullopt));
-    for (auto &x : arr) {
+    for (auto &x : nums) {
         cin >> x;
     }
 
-    cout << count(0, nullopt) << '\n';
+    cout << count(0, nums[0]) << '\n';
 
     return 0;
 }
