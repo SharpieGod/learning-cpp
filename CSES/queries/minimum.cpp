@@ -5,34 +5,24 @@ using namespace std;
 int n, q;
 vector<int> numbers;
 
-vector<int> mins;
-
-int min_in_range(int a, int b) {
-    if (a > b) {
-        return INT_MAX;
-    }
-
-    if (a == b) {
-        return numbers[a];
-    }
-
-    if (mins[a * n + b] != -1) {
-        return mins[a * n + b];
-    }
-
-    int m = min(numbers[a], min(numbers[b], min_in_range(a + 1, b - 1)));
-    mins[a * n + b] = m;
-
-    return m;
-}
+vector<vector<int>> mins; // mins[a][b], min from a to a + 2^b inclusive
 
 int main() {
     cin >> n >> q;
     numbers.assign(n, 0);
-    mins.assign(n * n + n, -1);
+    mins.assign(n, vector<int>(18));
 
     for (auto &n : numbers) {
         cin >> n;
+    }
+    for (int i = 0; i < n; i++) {
+        mins[i][0] = numbers[i];
+    }
+
+    for (int j = 1; j < log2(n) + 1; j++) {
+        for (int i = 0; i + (1 << j) <= n; i++) {
+            mins[i][j] = min(mins[i][j - 1], mins[i + (1 << (j - 1))][j - 1]);
+        }
     }
 
     while (q--) {
@@ -41,7 +31,8 @@ int main() {
         a--;
         b--;
 
-        cout << min_in_range(a, b) << '\n';
+        int k = floor(log2(b - a + 1));
+        cout << min(mins[a][k], mins[b - (1 << k) + 1][k]) << '\n';
     }
 
     return 0;
