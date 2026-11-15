@@ -6,7 +6,8 @@ int n, m;
 using ll = unsigned long int;
 const ll INF = ULONG_MAX;
 
-template <typename T> using min_q = priority_queue<T, vector<T>, greater<T>>;
+template <typename T>
+using min_q = priority_queue<T, vector<T>, greater<T>>;
 
 int main() {
     cin >> n >> m;
