@@ -16,14 +16,14 @@ int longest(size_t cur, vector<pair<int, int>> &movies) {
     size_t l = cur + 1, r = movies.size();
 
     while (l < r) {
+
         size_t m = l + (r - l) / 2;
 
-        if (movies[m].first <
-            movies[cur]
-                .second) // if the middle starts before the current ends ->
-            l = m + 1;   // starts too early
-        else
-            r = m; // might be the first that starts before it
+        if (movies[m].first >= movies[cur].second) {
+            r = m; // possible solution
+        } else {
+            l = m + 1; // movie starts too early
+        }
     }
     memo[cur] = max(longest(cur + 1, movies), 1 + longest(l, movies));
 
